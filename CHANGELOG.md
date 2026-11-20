@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1
+
+- Fixed: the `/emoji` picker no longer opens the chat box itself. With the gamepad interface that ran Blizzard's chat focus code in this addon's execution and could later be reported as `ADDON_ACTION_FORBIDDEN` for `SetPreferredGamepadInteractTarget()` when a panel (for example the game menu) was closed. A click now only puts the code into a chat box that is already open, otherwise it asks you to open chat first.
+
+State: the cause was found by reading Blizzard's code and the mock client checks that the picker never opens chat; it has not been confirmed in the game yet.
+
 ## 0.1.0
 
 First release.

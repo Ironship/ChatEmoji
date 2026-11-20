@@ -2,7 +2,7 @@
 ## Title: ChatEmoji
 ## Notes: Shows emoticons (:) :D <3 xD), :shortcodes: and emoji characters in chat as pictures. /emoji opens the picker.
 ## Author: Ironship
-## Version: 0.1.0
+## Version: 0.1.1
 ## Category: Chat
 ## SavedVariables: ChatEmojiDB
 ## IconTexture: Interface\AddOns\ChatEmoji\Media\1f642.tga
