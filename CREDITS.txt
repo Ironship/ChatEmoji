@@ -1,0 +1,8 @@
+ChatEmoji
+
+Pictures: Twemoji, copyright 2019 Twitter, Inc and other contributors (maintained by jdecked),
+licensed under CC-BY 4.0: https://creativecommons.org/licenses/by/4.0/
+Source: https://github.com/jdecked/twemoji   Licence text: Media/LICENSE-Twemoji.txt
+The pictures were scaled to 32x32 and converted to TGA for the game client.
+
+Emoji names (shortcodes): gemoji, MIT licence, https://github.com/github/gemoji

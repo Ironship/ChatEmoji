@@ -1,0 +1,4 @@
+tools/cache/
+tools/mock/chat-mock.html
+dist/
+__pycache__/

@@ -1,0 +1,15 @@
+## Interface: 11509, 16001, 20506, 38002, 40402, 50504, 120105
+## Title: ChatEmoji
+## Notes: Shows emoticons (:) :D <3 xD), :shortcodes: and emoji characters in chat as pictures. /emoji opens the picker.
+## Author: Ironship
+## Version: 0.1.0
+## Category: Chat
+## SavedVariables: ChatEmojiDB
+## IconTexture: Interface\AddOns\ChatEmoji\Media\1f642.tga
+## X-Website: https://github.com/Ironship/ChatEmoji
+## X-License: GPL-3.0
+
+Data.lua
+Emoticons.lua
+Core.lua
+UI.lua
