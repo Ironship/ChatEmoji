@@ -280,6 +280,55 @@ def main():
     check("saved size kept", ns2.db.size, 18)
     check("missing settings filled in", (ns2.db.enabled, ns2.db.emoticons, ns2.db.shortcodes, ns2.db.unicode), (True, True, True, True))
 
+    # chat bubbles ---------------------------------------------------------------------------------
+    lua.execute("Mock.bubbles = {}")
+    b1, s1 = g.Mock.newBubble(b"hello :) xD")
+    b2, s2 = g.Mock.newBubble(b"no emoji here")
+    b3, s3 = g.Mock.newBubble(b"old style :joy:", b"child")
+    ns.ScanBubbles()
+    check("bubble text converted", u(g.Mock.norm(s1._text)), "hello <slightly_smiling_face> <laughing>")
+    check("bubble without emoji untouched", u(s2._text), "no emoji here")
+    check("bubble with the string on a child frame", u(g.Mock.norm(s3._text)), "old style <joy>")
+    again = u(s1._text)
+    ns.ScanBubbles()
+    check("second scan changes nothing", u(s1._text), again)
+    db.bubbles = False
+    b4, s4 = g.Mock.newBubble(b":)")
+    ns.ScanBubbles()
+    check("bubbles switched off", u(s4._text), ":)")
+    db.bubbles = True
+    db.enabled = False
+    ns.ScanBubbles()
+    check("conversion switched off", u(s4._text), ":)")
+    db.enabled = True
+    g.Mock.secret[b"secret :)"] = True
+    b5, s5 = g.Mock.newBubble(b"secret :)")
+    ns.ScanBubbles()
+    check("secret bubble text left alone", u(s5._text), "secret :)")
+    check("no error recorded for bubbles", ns.lastError, None)
+    # the event starts a short watch that looks at the bubbles each step and then stops
+    watcher = g.Mock.findFrame("CHAT_MSG_SAY")
+    check("watcher frame registered for the chat events", watcher is not None, True)
+    for ev in ("CHAT_MSG_SAY", "CHAT_MSG_YELL", "CHAT_MSG_PARTY", "CHAT_MSG_MONSTER_SAY"):
+        check("watcher listens to " + ev, bool(watcher._events[ev]), True)
+    lua.execute("Mock.bubbles = {}; Mock.now = 100")
+    b6, s6 = g.Mock.newBubble(b"later :D")
+    watcher._scripts["OnEvent"](watcher, b"CHAT_MSG_SAY")
+    check("event starts the watch", watcher._scripts["OnUpdate"] is not None, True)
+    watcher._scripts["OnUpdate"](watcher, 0.016)
+    check("first look converts the new bubble", u(g.Mock.norm(s6._text)), "later <smiley>")
+    lua.execute("Mock.now = 101")
+    watcher._scripts["OnUpdate"](watcher, 0.1)
+    check("the watch ends by itself", watcher._scripts["OnUpdate"], None)
+    db.bubbles = False
+    watcher._scripts["OnEvent"](watcher, b"CHAT_MSG_SAY")
+    check("no watch while bubbles are off", watcher._scripts["OnUpdate"], None)
+    db.bubbles = True
+    lua.execute('SlashCmdList.CHATEMOJI("bubbles off")')
+    check("/emoji bubbles off", db.bubbles, False)
+    lua.execute('SlashCmdList.CHATEMOJI("bubbles on")')
+    check("/emoji bubbles on", db.bubbles, True)
+
     # older clients (Classic Era, TBC, Wrath, Cata, Mists) have the global chat functions and no ChatFrameUtil
     lua3 = new_runtime("""
         ChatFrame_AddMessageEventFilter = ChatFrameUtil.AddMessageEventFilter

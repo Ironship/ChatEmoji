@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.0
+
+- Chat bubbles above characters show the pictures too. A short time after a say, yell, emote, party or NPC chat event the visible bubbles are read and their text goes through the same converter as the chat lines. Switch: "Chat bubbles" in `/emoji` or `/emoji bubbles on|off`.
+
+State: checked on the mock client only. It has not been tried in the game: whether the bubble of the client resizes around the picture, and whether the bubbles of WoW: Forever are reachable through `C_ChatBubbles.GetAllChatBubbles` at all, is still to be seen.
+
 ## 0.1.1
 
 - Fixed: the `/emoji` picker no longer opens the chat box itself. With the gamepad interface that ran Blizzard's chat focus code in this addon's execution and could later be reported as `ADDON_ACTION_FORBIDDEN` for `SetPreferredGamepadInteractTarget()` when a panel (for example the game menu) was closed. A click now only puts the code into a chat box that is already open, otherwise it asks you to open chat first.

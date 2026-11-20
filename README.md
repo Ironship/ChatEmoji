@@ -7,10 +7,10 @@ For WoW: Forever, Classic Era, TBC Anniversary, Wrath (Titan), Cataclysm, Mists 
 - `:joy:`, `:fire:`, `:+1:` ... 446 pictures from Twemoji
 - emoji characters (🙂 ❤️ 👍🏽) that arrive in chat are shown as pictures too
 - links, colours and normal text are left alone (`http://x.com:)`, `(8)`, `A)` stay as typed)
+- chat bubbles above characters show the pictures as well
 - `/emoji` opens a picker: click a picture to put its code in the chat box; switches and picture size
 
-Players without the addon see the plain text you typed. Pictures show in the chat frame, not in
-chat bubbles.
+Players without the addon see the plain text you typed.
 
 Install: extract the ZIP into `Interface/AddOns` (the folder must be called `ChatEmoji`).
 

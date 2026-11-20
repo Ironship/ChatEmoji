@@ -151,7 +151,7 @@ local function ChangeSize(step)
 end
 
 local function Build()
-	local height = PAD + 24 + 24 + ROWS * CELL + 28 + 4 * 22 + 36 + PAD
+	local height = PAD + 24 + 24 + ROWS * CELL + 28 + 5 * 22 + 36 + PAD
 	local f = CreateFrame("Frame", "ChatEmojiPicker", UIParent)
 	picker = f
 	f:SetSize(WIDTH, height)
@@ -265,13 +265,14 @@ local function Build()
 		Check(f, "emoticons", "Emoticons  :)", PAD + 150, y),
 		Check(f, "shortcodes", "Shortcodes  :joy:", PAD, y - 22),
 		Check(f, "unicode", "Emoji characters", PAD + 150, y - 22),
+		Check(f, "bubbles", "Chat bubbles", PAD, y - 44),
 	}
 
 	local sizeLabel = f:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-	sizeLabel:SetPoint("TOPLEFT", f, "TOPLEFT", PAD, y - 50)
+	sizeLabel:SetPoint("TOPLEFT", f, "TOPLEFT", PAD, y - 72)
 	sizeLabel:SetText("Size in chat")
 	local minus = Button(f, 20, 18, "-")
-	minus:SetPoint("TOPLEFT", f, "TOPLEFT", PAD + 90, y - 48)
+	minus:SetPoint("TOPLEFT", f, "TOPLEFT", PAD + 90, y - 70)
 	minus:SetScript("OnClick", function()
 		ChangeSize(-1)
 	end)
@@ -285,7 +286,7 @@ local function Build()
 	end)
 
 	f.preview = f:CreateFontString(nil, "OVERLAY", "ChatFontNormal")
-	f.preview:SetPoint("TOPLEFT", f, "TOPLEFT", PAD, y - 78)
+	f.preview:SetPoint("TOPLEFT", f, "TOPLEFT", PAD, y - 100)
 	f.preview:SetPoint("RIGHT", f, "RIGHT", -PAD, 0)
 	f.preview:SetJustifyH("LEFT")
 
@@ -329,6 +330,8 @@ local function Slash(input)
 		ns.TogglePicker()
 	elseif cmd == "on" or cmd == "off" then
 		SetFlag("enabled", "conversion", cmd == "on")
+	elseif cmd == "bubbles" then
+		SetFlag("bubbles", "chat bubbles", arg ~= "off")
 	elseif cmd == "size" then
 		local n = tonumber(arg)
 		if n and (n == 0 or (n >= 8 and n <= 64)) then
@@ -348,7 +351,7 @@ local function Slash(input)
 			Say("emoticons without a picture: " .. table.concat(ns.missingEmoticons, ", "))
 		end
 	else
-		Say("/emoji - picker and settings; /emoji on|off; /emoji size <0|8-64>; /emoji test")
+		Say("/emoji - picker and settings; /emoji on|off; /emoji bubbles on|off; /emoji size <0|8-64>; /emoji test")
 	end
 end
 

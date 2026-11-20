@@ -18,13 +18,14 @@ local function noop(self)
 end
 
 local state = {} -- per method: how a stateful method behaves
+local FIELDS = { String = true, Tail = true } -- CamelCase names that are data, not methods
 
 local function newObject(kind, name, parent)
 	local obj = { _kind = kind, _name = name, _parent = parent, _scripts = {}, _events = {}, _shown = true,
 		_text = "", _children = {} }
 	return setmetatable(obj, {
 		__index = function(t, key)
-			if type(key) == "string" and key:match("^%u") then
+			if type(key) == "string" and key:match("^%u") and not FIELDS[key] then
 				return state[key] or noop
 			end
 		end,
@@ -80,6 +81,17 @@ end
 function state.SetColorTexture(self, r, g, b, a)
 	self._color = { r, g, b, a }
 end
+function state.GetNumChildren(self)
+	return self._kids and #self._kids or 0
+end
+function state.GetChildren(self)
+	return unpack(self._kids or {})
+end
+function state.GetNumRegions()
+	return 0
+end
+function state.GetRegions()
+end
 function state.Insert(self, text)
 	self._text = self._text .. text
 	self._inserted = (self._inserted or "") .. text
@@ -131,6 +143,35 @@ local function canaccessvalue(...)
 		end
 	end
 	return true
+end
+
+-- Chat bubbles: Mock.bubbles is a list of bubble frames (each with a String font string)
+Mock.bubbles = {}
+Mock.now = 0
+function GetTime()
+	return Mock.now
+end
+C_ChatBubbles = { GetAllChatBubbles = function() return Mock.bubbles end }
+-- style "child": the string hangs on the first child frame, as older clients build bubbles
+function Mock.newBubble(text, style)
+	local b = newObject("Frame", nil, UIParent)
+	local holder = b
+	if style == "child" then
+		holder = newObject("Frame", nil, b)
+		b._kids = { holder }
+	end
+	holder.String = newObject("FontString", nil, holder)
+	holder.String._text = text
+	Mock.bubbles[#Mock.bubbles + 1] = b
+	return b, holder.String
+end
+
+function Mock.findFrame(event)
+	for _, f in ipairs(Mock.frames) do
+		if f._events[event] and f._scripts.OnEvent then
+			return f
+		end
+	end
 end
 
 -- Chat edit box and chat helpers ---------------------------------------------------------------
@@ -186,7 +227,7 @@ end
 -- Loading ---------------------------------------------------------------------------------------
 function Mock.load(dir)
 	Mock.ns = {}
-	for _, file in ipairs({ "Data.lua", "Emoticons.lua", "Core.lua", "UI.lua" }) do
+	for _, file in ipairs({ "Data.lua", "Emoticons.lua", "Core.lua", "Bubbles.lua", "UI.lua" }) do
 		local chunk, err = loadfile(dir .. "/" .. file)
 		assert(chunk, err)
 		chunk("ChatEmoji", Mock.ns)

@@ -9,6 +9,7 @@ local DEFAULTS = {
 	emoticons = true, -- ":)" "<3" "xD" ...
 	shortcodes = true, -- ":joy:"
 	unicode = true, -- pictures typed or pasted as real emoji characters
+	bubbles = true, -- chat bubbles above characters
 	size = 0, -- height in pixels, 0 = the height of the chat font
 }
 ns.DEFAULTS = DEFAULTS
