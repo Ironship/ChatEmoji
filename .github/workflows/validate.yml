@@ -1,0 +1,20 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install lupa
+      - name: Package check (TOC files, Interface numbers, changelog version)
+        run: python tools/package.py --check
+      - name: Run the addon on the mock client (Lua 5.1)
+        run: python tools/test_addon.py
