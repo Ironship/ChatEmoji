@@ -232,7 +232,12 @@ def main():
     check("cell shows a texture of the addon", u(first.icon._texture).startswith("Interface\\AddOns\\ChatEmoji\\Media\\"), True)
     g.Mock.editBoxActive = False
     first._scripts["OnClick"](first)
-    check("click opens chat and inserts the shortcode", u(g.Mock.editBox._inserted), ":grinning: ")
+    check("click with chat closed does not open chat (gamepad binding taint)", g.Mock.openChatCalls, None)
+    check("click with chat closed inserts nothing and says so", (g.Mock.editBox._inserted, "open the chat box first" in u(g.Mock.lines[len(g.Mock.lines)])), (None, True))
+    g.Mock.editBoxActive = True
+    first._scripts["OnClick"](first)
+    check("click with chat open inserts the shortcode", u(g.Mock.editBox._inserted), ":grinning: ")
+    check("still no OpenChat call", g.Mock.openChatCalls, None)
     first._scripts["OnEnter"](first)
     check("tooltip names the shortcode", u(g.Mock.tooltip.title), ":grinning:")
     # next page, last page, tabs
@@ -290,6 +295,7 @@ def main():
     check("old client: converts", u(g3.Mock.norm(msg)), "hi <joy>")
     lua3.execute('SlashCmdList.CHATEMOJI("")')
     cell = g3.ChatEmojiPicker.cells[1]
+    g3.Mock.editBoxActive = True
     cell._scripts["OnClick"](cell)
     check("old client: picker inserts through ChatEdit_GetActiveWindow", u(g3.Mock.editBox._inserted), ":grinning: ")
 

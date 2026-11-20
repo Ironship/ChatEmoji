@@ -24,20 +24,16 @@ local function ActiveEditBox()
 	end
 end
 
+-- Only ever puts text into a chat box the player has already opened. Opening chat from here
+-- (ChatFrameUtil.OpenChat) would run Blizzard's gamepad chat focus code, which writes the input
+-- binding stack, in this addon's execution: that taints the stack and a later Esc / panel close is
+-- then reported as ADDON_ACTION_FORBIDDEN (SetPreferredGamepadInteractTarget) against ChatEmoji.
 local function Insert(text)
 	local box = ActiveEditBox()
-	if not box then
-		if ChatFrameUtil and ChatFrameUtil.OpenChat then
-			ChatFrameUtil.OpenChat()
-		elseif ChatFrame_OpenChat then
-			ChatFrame_OpenChat()
-		end
-		box = ActiveEditBox()
-	end
 	if box then
 		box:Insert(text)
 	else
-		ns.Print("open the chat box first")
+		ns.Print("open the chat box first (Enter), then click a picture")
 	end
 end
 

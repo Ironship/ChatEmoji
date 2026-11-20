@@ -152,6 +152,7 @@ function ChatFrameUtil.GetActiveWindow()
 	return Mock.editBoxActive and Mock.editBox or nil
 end
 function ChatFrameUtil.OpenChat()
+	Mock.openChatCalls = (Mock.openChatCalls or 0) + 1
 	Mock.editBoxActive = true
 end
 
